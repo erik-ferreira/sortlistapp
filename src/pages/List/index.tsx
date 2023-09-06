@@ -6,8 +6,8 @@ import Animated, {
 
 import { CARDS } from "../../data/cards"
 
+import { Card } from "../../components/Card"
 import { Header } from "../../components/Header"
-import { MovableCard } from "../../components/MovableCard"
 
 import { CARD } from "../../utils/constants"
 
@@ -46,13 +46,16 @@ export function List() {
         contentContainerStyle={{ height: CARDS.length * CARD.TOTAL_HEIGHT }}
       >
         {CARDS.map((item) => (
-          <MovableCard
-            key={item.id}
-            data={item}
+          <Card.Root
+            cardId={item.id}
             scrollY={scrollY}
             cardsPosition={cardsPosition}
             totalCards={CARDS.length}
-          />
+          >
+            <Card.Content>
+              <Card.Title title={item.title} />
+            </Card.Content>
+          </Card.Root>
         ))}
       </Animated.ScrollView>
     </View>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   runOnJS,
@@ -9,26 +9,26 @@ import Animated, {
   useAnimatedReaction,
 } from "react-native-reanimated"
 
-import { Card, CardProps } from "../Card"
-
 import { CARD } from "../../utils/constants"
 
 import { styles } from "./styles"
 
-interface MovableCardProps {
-  data: CardProps
+interface CardRootProps {
+  children: ReactNode
+  cardId: number
   cardsPosition: SharedValue<number[]>
   scrollY: SharedValue<number>
   totalCards: number
 }
 
-export function MovableCard({
-  data,
+export function CardRoot({
+  children,
+  cardId,
   cardsPosition,
   scrollY,
   totalCards,
-}: MovableCardProps) {
-  const top = useSharedValue(cardsPosition.value[data.id] * CARD.TOTAL_HEIGHT)
+}: CardRootProps) {
+  const top = useSharedValue(cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT)
   const [moving, setMoving] = useState(false)
 
   function objectMove(positions: number[], from: number, to: number) {
@@ -49,7 +49,7 @@ export function MovableCard({
   }
 
   useAnimatedReaction(
-    () => cardsPosition.value[data.id],
+    () => cardsPosition.value[cardId],
     (currentPosition, previousPosition) => {
       if (currentPosition !== previousPosition) {
         if (!moving) {
@@ -85,16 +85,16 @@ export function MovableCard({
         Math.min(currentPosition, endPositionList)
       )
 
-      if (newPosition !== cardsPosition.value[data.id]) {
+      if (newPosition !== cardsPosition.value[cardId]) {
         cardsPosition.value = objectMove(
           cardsPosition.value,
-          cardsPosition.value[data.id],
+          cardsPosition.value[cardId],
           newPosition
         )
       }
     })
     .onFinalize(() => {
-      const newPosition = cardsPosition.value[data.id] * CARD.TOTAL_HEIGHT
+      const newPosition = cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT
       top.value = withSpring(newPosition)
 
       runOnJS(setMoving)(false)
@@ -112,7 +112,7 @@ export function MovableCard({
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <GestureDetector gesture={Gesture.Race(panGesture, longPressGesture)}>
-        <Card data={data} />
+        {children}
       </GestureDetector>
     </Animated.View>
   )
