@@ -8,16 +8,16 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: HEIGHT,
     borderRadius: 8,
-    marginBottom: 12,
     backgroundColor: "#595959",
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+
   title: {
-    fontWeight: "bold",
-    fontSize: 18,
     color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 })

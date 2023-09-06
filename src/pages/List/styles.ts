@@ -8,5 +8,6 @@ export const styles = StyleSheet.create({
   list: {
     flex: 1,
     padding: 32,
+    position: "relative",
   },
 })
