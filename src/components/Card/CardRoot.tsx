@@ -27,12 +27,10 @@ export function CardRoot({
   cardsPosition,
   scrollY,
 }: CardRootProps) {
-  const positionCard = cardsPosition.value[cardId]
-  const top = useSharedValue(positionCard * CARD.TOTAL_HEIGHT)
-
+  const top = useSharedValue(cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT)
   const [moving, setMoving] = useState(false)
 
-  function objectMove(positions: number[], from: number, to: number) {
+  function moveCard(positions: number[], from: number, to: number) {
     "worklet"
     const newPositions = Object.assign({}, positions)
 
@@ -48,18 +46,6 @@ export function CardRoot({
 
     return newPositions
   }
-
-  useAnimatedReaction(
-    () => positionCard,
-    (currentPosition, previousPosition) => {
-      if (currentPosition !== previousPosition) {
-        if (!moving) {
-          top.value = withSpring(currentPosition * CARD.TOTAL_HEIGHT)
-        }
-      }
-    },
-    [moving]
-  )
 
   const longPressGesture = Gesture.LongPress()
     .minDuration(200)
@@ -86,16 +72,16 @@ export function CardRoot({
         Math.min(currentPosition, endPositionList)
       )
 
-      if (newPosition !== positionCard) {
-        cardsPosition.value = objectMove(
+      if (newPosition !== cardsPosition.value[cardId]) {
+        cardsPosition.value = moveCard(
           cardsPosition.value,
-          positionCard,
+          cardsPosition.value[cardId],
           newPosition
         )
       }
     })
     .onFinalize(() => {
-      const newPosition = positionCard * CARD.TOTAL_HEIGHT
+      const newPosition = cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT
       top.value = withSpring(newPosition)
 
       runOnJS(setMoving)(false)
@@ -109,6 +95,18 @@ export function CardRoot({
       zIndex: moving ? 1 : 0,
     }
   }, [moving])
+
+  useAnimatedReaction(
+    () => cardsPosition.value[cardId],
+    (currentPosition, previousPosition) => {
+      if (currentPosition !== previousPosition) {
+        if (!moving) {
+          top.value = withSpring(currentPosition * CARD.TOTAL_HEIGHT)
+        }
+      }
+    },
+    [moving]
+  )
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
