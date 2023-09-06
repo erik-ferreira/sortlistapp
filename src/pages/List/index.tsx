@@ -1,14 +1,15 @@
 import { View } from "react-native"
 import Animated, {
-  useAnimatedScrollHandler,
   useSharedValue,
+  useAnimatedScrollHandler,
 } from "react-native-reanimated"
 
 import { CARDS } from "../../data/cards"
 
 import { Header } from "../../components/Header"
-import { CARD_HEIGHT } from "../../components/Card"
 import { MovableCard } from "../../components/MovableCard"
+
+import { CARD } from "../../utils/constants"
 
 import { styles } from "./styles"
 
@@ -42,7 +43,7 @@ export function List() {
         onScroll={handleScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ height: CARDS.length * CARD_HEIGHT }}
+        contentContainerStyle={{ height: CARDS.length * CARD.TOTAL_HEIGHT }}
       >
         {CARDS.map((item) => (
           <MovableCard

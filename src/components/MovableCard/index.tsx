@@ -9,7 +9,9 @@ import Animated, {
   useAnimatedReaction,
 } from "react-native-reanimated"
 
-import { CARD_HEIGHT, Card, CardProps } from "../Card"
+import { Card, CardProps } from "../Card"
+
+import { CARD } from "../../utils/constants"
 
 import { styles } from "./styles"
 
@@ -26,7 +28,7 @@ export function MovableCard({
   scrollY,
   totalCards,
 }: MovableCardProps) {
-  const top = useSharedValue(cardsPosition.value[data.id] * CARD_HEIGHT)
+  const top = useSharedValue(cardsPosition.value[data.id] * CARD.TOTAL_HEIGHT)
   const [moving, setMoving] = useState(false)
 
   function objectMove(positions: number[], from: number, to: number) {
@@ -51,7 +53,7 @@ export function MovableCard({
     (currentPosition, previousPosition) => {
       if (currentPosition !== previousPosition) {
         if (!moving) {
-          top.value = withSpring(currentPosition * CARD_HEIGHT)
+          top.value = withSpring(currentPosition * CARD.TOTAL_HEIGHT)
         }
       }
     },
@@ -71,11 +73,11 @@ export function MovableCard({
     })
     .onUpdate((event) => {
       const positionY = event.absoluteY + scrollY.value
-      top.value = positionY - CARD_HEIGHT
+      top.value = positionY - CARD.TOTAL_HEIGHT
 
       const startPositionList = 0
       const endPositionList = totalCards - 1
-      const currentPosition = Math.floor(positionY / CARD_HEIGHT)
+      const currentPosition = Math.floor(positionY / CARD.TOTAL_HEIGHT)
 
       ;("worklet")
       const newPosition = Math.max(
@@ -92,7 +94,7 @@ export function MovableCard({
       }
     })
     .onFinalize(() => {
-      const newPosition = cardsPosition.value[data.id] * CARD_HEIGHT
+      const newPosition = cardsPosition.value[data.id] * CARD.TOTAL_HEIGHT
       top.value = withSpring(newPosition)
 
       runOnJS(setMoving)(false)
@@ -101,7 +103,7 @@ export function MovableCard({
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      top: top.value - CARD_HEIGHT,
+      top: top.value - CARD.TOTAL_HEIGHT,
       opacity: withSpring(moving ? 1 : 0.6),
       zIndex: moving ? 1 : 0,
     }

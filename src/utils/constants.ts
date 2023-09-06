@@ -1,0 +1,8 @@
+const HEIGHT = 68
+const MARGIN_BOTTOM = 12
+
+export const CARD = {
+  HEIGHT,
+  MARGIN_BOTTOM,
+  TOTAL_HEIGHT: HEIGHT + MARGIN_BOTTOM,
+}
