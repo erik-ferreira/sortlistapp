@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated"
 
 import { CARD } from "../../utils/constants"
+import { totalCards } from "../../data/cards"
 
 import { styles } from "./styles"
 
@@ -18,7 +19,6 @@ interface CardRootProps {
   cardId: number
   cardsPosition: SharedValue<number[]>
   scrollY: SharedValue<number>
-  totalCards: number
 }
 
 export function CardRoot({
@@ -26,9 +26,10 @@ export function CardRoot({
   cardId,
   cardsPosition,
   scrollY,
-  totalCards,
 }: CardRootProps) {
-  const top = useSharedValue(cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT)
+  const positionCard = cardsPosition.value[cardId]
+  const top = useSharedValue(positionCard * CARD.TOTAL_HEIGHT)
+
   const [moving, setMoving] = useState(false)
 
   function objectMove(positions: number[], from: number, to: number) {
@@ -49,7 +50,7 @@ export function CardRoot({
   }
 
   useAnimatedReaction(
-    () => cardsPosition.value[cardId],
+    () => positionCard,
     (currentPosition, previousPosition) => {
       if (currentPosition !== previousPosition) {
         if (!moving) {
@@ -85,16 +86,16 @@ export function CardRoot({
         Math.min(currentPosition, endPositionList)
       )
 
-      if (newPosition !== cardsPosition.value[cardId]) {
+      if (newPosition !== positionCard) {
         cardsPosition.value = objectMove(
           cardsPosition.value,
-          cardsPosition.value[cardId],
+          positionCard,
           newPosition
         )
       }
     })
     .onFinalize(() => {
-      const newPosition = cardsPosition.value[cardId] * CARD.TOTAL_HEIGHT
+      const newPosition = positionCard * CARD.TOTAL_HEIGHT
       top.value = withSpring(newPosition)
 
       runOnJS(setMoving)(false)

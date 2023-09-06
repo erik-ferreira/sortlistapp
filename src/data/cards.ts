@@ -12,3 +12,16 @@ export const CARDS = [
   { id: 11, title: "Esportes" },
   { id: 12, title: "Moda e Beleza" },
 ]
+
+export const totalCards = CARDS.length
+
+// function to create one array object by CARDS
+export function listToObject() {
+  const object: any = {}
+
+  CARDS.forEach((card, index) => {
+    object[card.id] = index
+  })
+
+  return object
+}
